@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { fileURLToPath } from "node:url";
 
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -41,58 +42,84 @@ export async function seedDatabase(prisma: SeedClient) {
     },
   });
 
-  for (const permissionCode of permissionCodes) {
-    await prisma.adminPermission.upsert({
-      where: { code: permissionCode },
-      update: {
-        description: `Allows ${permissionCode.replaceAll(".", " ")} operations.`,
-      },
-      create: {
-        code: permissionCode,
-        description: `Allows ${permissionCode.replaceAll(".", " ")} operations.`,
-      },
-    });
-  }
+  const permissions = await Promise.all(
+    permissionCodes.map((permissionCode) =>
+      prisma.adminPermission.upsert({
+        where: { code: permissionCode },
+        update: {
+          description: `Allows ${permissionCode.replaceAll(".", " ")} operations.`,
+        },
+        create: {
+          code: permissionCode,
+          description: `Allows ${permissionCode.replaceAll(".", " ")} operations.`,
+        },
+        select: {
+          id: true,
+          code: true,
+        },
+      }),
+    ),
+  );
 
-  for (const [roleCode, definition] of Object.entries(roleDefinitions) as [
+  const roleEntries = Object.entries(roleDefinitions) as [
     RoleCode,
     (typeof roleDefinitions)[RoleCode],
-  ][]) {
-    const role = await prisma.adminRole.upsert({
-      where: { code: roleCode },
-      update: {
-        name: definition.name,
-        description: definition.description,
-        systemRole: true,
-      },
-      create: {
-        code: roleCode,
-        name: definition.name,
-        description: definition.description,
-        systemRole: true,
-      },
-    });
+  ][];
 
-    for (const permissionCode of rolePermissionMapping[roleCode]) {
-      const permission = await prisma.adminPermission.findUniqueOrThrow({
-        where: { code: permissionCode },
-      });
-
-      await prisma.rolePermission.upsert({
-        where: {
-          roleId_permissionId: {
-            roleId: role.id,
-            permissionId: permission.id,
-          },
+  const roles = await Promise.all(
+    roleEntries.map(([roleCode, definition]) =>
+      prisma.adminRole.upsert({
+        where: { code: roleCode },
+        update: {
+          name: definition.name,
+          description: definition.description,
+          systemRole: true,
         },
-        update: {},
         create: {
-          roleId: role.id,
-          permissionId: permission.id,
+          code: roleCode,
+          name: definition.name,
+          description: definition.description,
+          systemRole: true,
         },
-      });
+        select: {
+          id: true,
+          code: true,
+        },
+      }),
+    ),
+  );
+
+  const permissionIdByCode = new Map(
+    permissions.map((permission) => [permission.code, permission.id]),
+  );
+
+  const roleIdByCode = new Map(roles.map((role) => [role.code, role.id]));
+
+  const rolePermissions = roleEntries.flatMap(([roleCode]) => {
+    const roleId = roleIdByCode.get(roleCode);
+
+    if (!roleId) {
+      throw new Error(`Seeded role could not be resolved: ${roleCode}`);
     }
-  }
+
+    return rolePermissionMapping[roleCode].map((permissionCode) => {
+      const permissionId = permissionIdByCode.get(permissionCode);
+
+      if (!permissionId) {
+        throw new Error(`Seeded permission could not be resolved: ${permissionCode}`);
+      }
+
+      return {
+        roleId,
+        permissionId,
+      };
+    });
+  });
+
+  await prisma.rolePermission.createMany({
+    data: rolePermissions,
+    skipDuplicates: true,
+  });
 }
 
 async function main() {

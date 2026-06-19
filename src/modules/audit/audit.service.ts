@@ -53,9 +53,30 @@ export async function writeAuditLog(
 }
 
 export function rejectUnsafeAuditPayload(payload: unknown): void {
-  const serialized = JSON.stringify(payload ?? {});
+  const visited = new WeakSet<object>();
 
-  if (/password|token|secret|cookie|recovery.?code|mfa/i.test(serialized)) {
+  function containsSensitiveField(value: unknown): boolean {
+    if (value === null || typeof value !== "object") {
+      return false;
+    }
+
+    if (visited.has(value)) {
+      return false;
+    }
+
+    visited.add(value);
+
+    if (Array.isArray(value)) {
+      return value.some(containsSensitiveField);
+    }
+
+    return Object.entries(value as Record<string, unknown>).some(
+      ([key, nestedValue]) =>
+        isSensitiveAuditField(key) || containsSensitiveField(nestedValue),
+    );
+  }
+
+  if (containsSensitiveField(payload)) {
     throw new ApplicationError({
       code: "VALIDATION_FAILED",
       message: "Audit payload contains sensitive fields.",
@@ -63,4 +84,20 @@ export function rejectUnsafeAuditPayload(payload: unknown): void {
       expose: false,
     });
   }
+}
+
+function isSensitiveAuditField(key: string): boolean {
+  const normalizedKey = key.replaceAll(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+  return (
+    normalizedKey.startsWith("password") ||
+    normalizedKey === "token" ||
+    normalizedKey.endsWith("token") ||
+    normalizedKey.includes("secret") ||
+    normalizedKey === "cookie" ||
+    normalizedKey.endsWith("cookie") ||
+    normalizedKey === "recoverycode" ||
+    normalizedKey.endsWith("recoverycodes") ||
+    normalizedKey === "onetimepassword"
+  );
 }
