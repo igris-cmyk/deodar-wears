@@ -1,0 +1,10 @@
+# Replace @repository-owner with the real GitHub team or maintainer before enabling branch protection.
+/src/infrastructure/database/ @repository-owner
+/src/infrastructure/payments/ @repository-owner
+/src/infrastructure/logging/ @repository-owner
+/src/infrastructure/monitoring/ @repository-owner
+/src/config/env* @repository-owner
+/src/app/api/ @repository-owner
+/prisma/ @repository-owner
+/.github/workflows/ @repository-owner
+/docs/security/ @repository-owner

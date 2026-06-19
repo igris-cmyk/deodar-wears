@@ -1,0 +1,13 @@
+allowBuilds:
+  "@prisma/engines": true
+  "@sentry/cli": true
+  esbuild: true
+  prisma: true
+  protobufjs: true
+  sharp: true
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - inngest@4.6.0
+overrides:
+  "@hono/node-server": 1.19.13
+  postcss: 8.5.10

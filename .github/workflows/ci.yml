@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: deodar_test
+          POSTGRES_USER: deodar
+          POSTGRES_PASSWORD: deodar
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      APP_ENV: test
+      APP_URL: http://127.0.0.1:3000
+      DATABASE_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
+      DIRECT_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
+      TEST_DATABASE_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
+      TEST_DIRECT_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
+      REQUIRE_DATABASE_TESTS: "true"
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.7.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm prisma:validate
+      - run: pnpm prisma:generate
+      - run: pnpm prisma:migrate:deploy
+      - run: pnpm prisma:seed
+      - run: pnpm prisma:seed
+      - run: pnpm test:migrations
+      - run: pnpm test:unit
+      - run: pnpm test:integration
+      - run: pnpm test:security
+      - run: pnpm build
+
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: deodar_test
+          POSTGRES_USER: deodar
+          POSTGRES_PASSWORD: deodar
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      APP_ENV: test
+      APP_URL: http://127.0.0.1:3000
+      DATABASE_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
+      DIRECT_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
+      TEST_DATABASE_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
+      TEST_DIRECT_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
+      REQUIRE_DATABASE_TESTS: "true"
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.7.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm prisma:migrate:deploy
+      - run: pnpm prisma:seed
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - run: pnpm test:accessibility
