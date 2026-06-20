@@ -11,6 +11,8 @@ export type CommerceTransactionOptions = {
   isolationLevel?: "SERIALIZABLE";
   maximumAttempts?: number;
   correlationId?: string;
+  timeoutMs?: number;
+  maxWaitMs?: number;
 };
 
 export async function withCommerceTransaction<T>(
@@ -23,9 +25,13 @@ export async function withCommerceTransaction<T>(
     try {
       return await prisma.$transaction(
         async (transaction) => operation(transaction),
-        options.isolationLevel === "SERIALIZABLE"
-          ? { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
-          : undefined,
+        {
+          ...(options.isolationLevel === "SERIALIZABLE"
+            ? { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+            : {}),
+          maxWait: options.maxWaitMs ?? 5_000,
+          timeout: options.timeoutMs ?? 15_000,
+        },
       );
     } catch (error) {
       if (!isRetryableTransactionError(error) || attempt >= maximumAttempts) {

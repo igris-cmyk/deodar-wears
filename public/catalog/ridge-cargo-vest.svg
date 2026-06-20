@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Ridge Cargo Vest product placeholder</title>
+  <desc id="desc">A compact technical vest in washed moss with utility pockets.</desc>
+  <rect width="1200" height="1500" fill="#e5dfd2"/>
+  <path d="M388 262h424l84 919H304l84-919Z" fill="#657267"/>
+  <path d="M497 262c10 92 44 148 103 168 59-20 93-76 103-168" fill="#2d3d34"/>
+  <path d="M390 580h168v185H390zM642 580h168v185H642zM414 862h144v166H414zM642 862h144v166H642z" fill="#3f5146" opacity=".62"/>
+  <path d="M600 430v751" stroke="#efe8da" stroke-width="14" opacity=".4"/>
+  <text x="92" y="1374" fill="#282a28" font-family="Arial, sans-serif" font-size="38" font-weight="700" letter-spacing="7">DEODAR WEARS</text>
+</svg>

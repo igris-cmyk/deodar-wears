@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Valley Weight Tee product placeholder</title>
+  <desc id="desc">A substantial off-white tee with restrained studio styling.</desc>
+  <rect width="1200" height="1500" fill="#ddd7ca"/>
+  <path d="m275 435 169-119h312l169 119 68 202-165 58-51-124v600H423V571l-51 124-165-58 68-202Z" fill="#f8f4ea"/>
+  <path d="M484 323c23 52 62 78 116 78s93-26 116-78" fill="none" stroke="#d0c7b9" stroke-width="42" stroke-linecap="round"/>
+  <path d="M423 1171h354" stroke="#c5bdad" stroke-width="16"/>
+  <text x="92" y="1374" fill="#282a28" font-family="Arial, sans-serif" font-size="38" font-weight="700" letter-spacing="7">DEODAR WEARS</text>
+</svg>

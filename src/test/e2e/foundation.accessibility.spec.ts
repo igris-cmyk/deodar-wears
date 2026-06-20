@@ -1,12 +1,24 @@
 import { AxeBuilder } from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-test("root route has no critical accessibility violations", async ({ page }) => {
-  await page.goto("/");
-  const results = await new AxeBuilder({ page }).analyze();
-  const critical = results.violations.filter(
-    (violation) => violation.impact === "critical",
-  );
+const publicRoutes = [
+  "/",
+  "/shop",
+  "/products/deodar-overshirt",
+  "/auth/register",
+] as const;
 
-  expect(critical).toEqual([]);
-});
+test.describe.configure({ mode: "serial" });
+
+for (const route of publicRoutes) {
+  test(`${route} has no critical accessibility violations`, async ({ page }) => {
+    test.setTimeout(60_000);
+    await page.goto(route, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    const results = await new AxeBuilder({ page }).analyze();
+    const critical = results.violations.filter(
+      (violation) => violation.impact === "critical",
+    );
+
+    expect(critical).toEqual([]);
+  });
+}

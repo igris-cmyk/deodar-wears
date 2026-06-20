@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Alpine Field Jacket product placeholder</title>
+  <desc id="desc">A structured weather jacket in deep forest green.</desc>
+  <rect width="1200" height="1500" fill="#e3ded1"/>
+  <path d="m248 1138 67-721 151-142h268l151 142 67 721c8 83-57 154-140 154H388c-83 0-148-71-140-154Z" fill="#263a31"/>
+  <path d="M466 275h268l-45 244H511l-45-244Z" fill="#18251f"/>
+  <path d="M397 574h165v176H397zM638 574h165v176H638zM412 843h151v205H412zM637 843h151v205H637z" fill="#4f6254"/>
+  <path d="M600 520v721" stroke="#d8d0c2" stroke-width="14" opacity=".38"/>
+  <text x="92" y="1374" fill="#282a28" font-family="Arial, sans-serif" font-size="38" font-weight="700" letter-spacing="7">DEODAR WEARS</text>
+</svg>

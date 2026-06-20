@@ -70,6 +70,7 @@ model User {
   adminMembership  AdminMembership?
   twoFactor        TwoFactor?
   auditLogs        AuditLog[]
+  inventoryAdjustments InventoryAdjustment[]
 
   @@index([email], map: "user_email_idx")
   @@map("user")
@@ -251,4 +252,196 @@ model AuditLog {
   @@index([action, createdAt], map: "audit_log_action_created_at_idx")
   @@index([actorUserId, createdAt], map: "audit_log_actor_created_at_idx")
   @@map("audit_logs")
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum ProductMediaType {
+  IMAGE
+}
+
+enum InventoryAdjustmentType {
+  INITIAL
+  RECEIPT
+  CORRECTION
+  DAMAGE
+  RETURN
+  MANUAL
+}
+
+model Product {
+  id               String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug             String              @unique @db.VarChar(160)
+  name             String              @db.VarChar(180)
+  shortDescription String              @map("short_description") @db.VarChar(260)
+  description      String              @db.Text
+  status           ProductStatus       @default(DRAFT)
+  featured         Boolean             @default(false)
+  seoTitle         String?             @map("seo_title") @db.VarChar(180)
+  seoDescription   String?             @map("seo_description") @db.VarChar(320)
+  createdAt        DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  variants         ProductVariant[]
+  categories       ProductCategory[]
+  collections      ProductCollection[]
+  media            ProductMedia[]
+
+  @@index([status, featured, updatedAt], map: "product_public_listing_idx")
+  @@index([featured, status], map: "product_featured_status_idx")
+  @@index([updatedAt], map: "product_updated_at_idx")
+  @@map("products")
+}
+
+model ProductVariant {
+  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId    String          @map("product_id") @db.Uuid
+  sku          String          @unique @db.VarChar(80)
+  title        String          @db.VarChar(180)
+  barcode      String?         @unique @db.VarChar(120)
+  optionValues Json            @map("option_values")
+  active       Boolean         @default(true)
+  sortPosition Int             @default(0) @map("sort_position")
+  createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
+  product      Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
+  media        ProductMedia[]
+  prices       ProductPrice[]
+  inventoryItem InventoryItem?
+
+  @@index([productId, active, sortPosition], map: "product_variant_product_active_sort_idx")
+  @@index([sku], map: "product_variant_sku_idx")
+  @@map("product_variants")
+}
+
+model Category {
+  id          String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String            @unique @db.VarChar(140)
+  name        String            @db.VarChar(160)
+  description String            @db.Text
+  active      Boolean           @default(true)
+  sortOrder   Int               @default(0) @map("sort_order")
+  createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  products    ProductCategory[]
+
+  @@index([active, sortOrder, name], map: "category_active_sort_idx")
+  @@map("categories")
+}
+
+model Collection {
+  id          String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String              @unique @db.VarChar(140)
+  name        String              @db.VarChar(160)
+  description String              @db.Text
+  active      Boolean             @default(true)
+  featured    Boolean             @default(false)
+  sortOrder   Int                 @default(0) @map("sort_order")
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  products    ProductCollection[]
+
+  @@index([active, featured, sortOrder], map: "collection_active_featured_sort_idx")
+  @@map("collections")
+}
+
+model ProductCategory {
+  productId    String   @map("product_id") @db.Uuid
+  categoryId   String   @map("category_id") @db.Uuid
+  sortPosition Int      @default(0) @map("sort_position")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@index([categoryId, sortPosition], map: "product_category_category_sort_idx")
+  @@map("product_categories")
+}
+
+model ProductCollection {
+  productId    String     @map("product_id") @db.Uuid
+  collectionId String     @map("collection_id") @db.Uuid
+  sortPosition Int        @default(0) @map("sort_position")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([productId, collectionId])
+  @@index([collectionId, sortPosition], map: "product_collection_collection_sort_idx")
+  @@map("product_collections")
+}
+
+model ProductMedia {
+  id           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId    String           @map("product_id") @db.Uuid
+  variantId    String?          @map("variant_id") @db.Uuid
+  url          String           @db.Text
+  altText      String           @map("alt_text") @db.VarChar(240)
+  mediaType    ProductMediaType @default(IMAGE) @map("media_type")
+  sortPosition Int              @default(0) @map("sort_position")
+  isPrimary    Boolean          @default(false) @map("is_primary")
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  product      Product          @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant      ProductVariant?  @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  @@index([productId, isPrimary, sortPosition], map: "product_media_product_primary_sort_idx")
+  @@index([variantId, sortPosition], map: "product_media_variant_sort_idx")
+  @@map("product_media")
+}
+
+model ProductPrice {
+  id                   String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  variantId            String         @map("variant_id") @db.Uuid
+  currency             String         @db.VarChar(3)
+  amountMinor          Int            @map("amount_minor")
+  compareAtAmountMinor Int?           @map("compare_at_amount_minor")
+  active               Boolean        @default(true)
+  createdAt            DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  variant              ProductVariant @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@index([variantId, currency, active], map: "product_price_variant_currency_active_idx")
+  @@map("product_prices")
+}
+
+model InventoryItem {
+  id               String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  variantId        String                @unique @map("variant_id") @db.Uuid
+  quantityOnHand   Int                   @default(0) @map("quantity_on_hand")
+  quantityReserved Int                   @default(0) @map("quantity_reserved")
+  reorderThreshold Int                   @default(0) @map("reorder_threshold")
+  trackInventory   Boolean               @default(true) @map("track_inventory")
+  allowBackorder   Boolean               @default(false) @map("allow_backorder")
+  createdAt        DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime              @updatedAt @map("updated_at") @db.Timestamptz(6)
+  variant          ProductVariant        @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  adjustments      InventoryAdjustment[]
+
+  @@index([trackInventory, quantityOnHand, quantityReserved], map: "inventory_item_availability_idx")
+  @@index([quantityOnHand, reorderThreshold], map: "inventory_item_reorder_idx")
+  @@map("inventory_items")
+}
+
+model InventoryAdjustment {
+  id                String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inventoryItemId   String                  @map("inventory_item_id") @db.Uuid
+  type              InventoryAdjustmentType
+  quantityDelta     Int                     @map("quantity_delta")
+  previousQuantity  Int                     @map("previous_quantity")
+  resultingQuantity Int                     @map("resulting_quantity")
+  reason            String                  @db.Text
+  actorUserId       String?                 @map("actor_user_id") @db.Uuid
+  requestId         String                  @map("request_id") @db.VarChar(128)
+  createdAt         DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  inventoryItem     InventoryItem           @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  actor             User?                   @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([inventoryItemId, createdAt], map: "inventory_adjustment_item_created_idx")
+  @@index([requestId], map: "inventory_adjustment_request_idx")
+  @@index([actorUserId, createdAt], map: "inventory_adjustment_actor_created_idx")
+  @@map("inventory_adjustments")
 }

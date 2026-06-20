@@ -16,9 +16,17 @@ export default function RegisterPage() {
   return (
     <AuthFormShell
       title="Create your Deodar Wears account."
-      aside={<Link href="/auth/sign-in">Already have an account? Sign in.</Link>}
+      aside={
+        <Link href="/auth/sign-in" prefetch={false}>
+          Already have an account? Sign in.
+        </Link>
+      }
     >
-      <form action="/api/auth/sign-up/email" className="grid gap-5" method="post">
+      <form
+        action="/api/auth/sign-up/email"
+        className="grid gap-3 lg:gap-2"
+        method="post"
+      >
         <Field>
           <FieldLabel htmlFor="name">Name</FieldLabel>
           <Input autoComplete="name" id="name" name="name" required />
