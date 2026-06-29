@@ -67,7 +67,10 @@ export default async function AdminInventoryPage({
                 </dl>
               </div>
 
-              <form action={adjustInventoryAction} className="grid gap-3 lg:grid-cols-[160px_140px_1fr_auto]">
+              <form
+                action={adjustInventoryAction}
+                className="grid gap-3 lg:grid-cols-[160px_140px_1fr_auto]"
+              >
                 <input type="hidden" name="inventoryItemId" value={item.id} />
                 <Select name="type" defaultValue="MANUAL" aria-label="Adjustment type">
                   <option value="RECEIPT">Receipt</option>
@@ -98,7 +101,10 @@ export default async function AdminInventoryPage({
                 {item.adjustments.length ? (
                   <ul className="grid gap-2">
                     {item.adjustments.map((adjustment) => (
-                      <li className="body-s text-[var(--foreground-muted)]" key={adjustment.id}>
+                      <li
+                        className="body-s text-[var(--foreground-muted)]"
+                        key={adjustment.id}
+                      >
                         {adjustment.type} {adjustment.quantityDelta > 0 ? "+" : ""}
                         {adjustment.quantityDelta}: {adjustment.previousQuantity} to{" "}
                         {adjustment.resultingQuantity} · {adjustment.reason}

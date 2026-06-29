@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { ensureSlug, validatePriceInput, validateVariantOptionValues } from "./catalog.helpers";
+import {
+  ensureSlug,
+  validatePriceInput,
+  validateVariantOptionValues,
+} from "./catalog.helpers";
 
 const trimmedText = (max: number) => z.string().trim().min(1).max(max);
 const optionalTrimmedText = (max: number) =>
@@ -9,7 +13,10 @@ const optionalTrimmedText = (max: number) =>
     .trim()
     .max(max)
     .optional()
-    .transform((value) => (value ? value : undefined));
+    .transform((value) => {
+      if (value === "") return undefined;
+      return value;
+    });
 
 export const productStatusSchema = z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]);
 

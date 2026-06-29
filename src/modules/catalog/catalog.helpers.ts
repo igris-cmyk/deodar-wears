@@ -81,10 +81,7 @@ export function validateVariantOptionValues(input: unknown): VariantOptionValues
 
   const entries: [string, unknown][] = Object.entries(
     input as Record<string, unknown>,
-  ).map(([key, value]) => [
-    key.trim(),
-    typeof value === "string" ? value.trim() : value,
-  ]);
+  ).map(([key, value]) => [key.trim(), typeof value === "string" ? value.trim() : value]);
 
   if (entries.length === 0 || entries.length > 8) {
     throw new ApplicationError({

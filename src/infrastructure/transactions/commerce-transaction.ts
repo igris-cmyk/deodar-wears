@@ -23,16 +23,13 @@ export async function withCommerceTransaction<T>(
 
   for (let attempt = 1; attempt <= maximumAttempts; attempt += 1) {
     try {
-      return await prisma.$transaction(
-        async (transaction) => operation(transaction),
-        {
-          ...(options.isolationLevel === "SERIALIZABLE"
-            ? { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
-            : {}),
-          maxWait: options.maxWaitMs ?? 5_000,
-          timeout: options.timeoutMs ?? 15_000,
-        },
-      );
+      return await prisma.$transaction(async (transaction) => operation(transaction), {
+        ...(options.isolationLevel === "SERIALIZABLE"
+          ? { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+          : {}),
+        maxWait: options.maxWaitMs ?? 5_000,
+        timeout: options.timeoutMs ?? 15_000,
+      });
     } catch (error) {
       if (!isRetryableTransactionError(error) || attempt >= maximumAttempts) {
         if (isRetryableTransactionError(error)) {

@@ -174,7 +174,10 @@ function PaginationLink({
   }
 
   return (
-    <Link className="body-s font-semibold underline underline-offset-4" href={href as Route}>
+    <Link
+      className="body-s font-semibold underline underline-offset-4"
+      href={href as Route}
+    >
       {label}
     </Link>
   );

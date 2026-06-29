@@ -20,7 +20,10 @@ export function VariantSelector({ variants }: { variants: Variant[] }) {
 
   if (!selected) {
     return (
-      <section aria-label="Product options" className="border-y border-[var(--border)] py-6">
+      <section
+        aria-label="Product options"
+        className="border-y border-[var(--border)] py-6"
+      >
         <p className="body-s text-[var(--foreground-muted)]">
           Options are being prepared.
         </p>
@@ -29,7 +32,10 @@ export function VariantSelector({ variants }: { variants: Variant[] }) {
   }
 
   return (
-    <section aria-label="Product options" className="grid gap-6 border-y border-[var(--border)] py-6">
+    <section
+      aria-label="Product options"
+      className="grid gap-6 border-y border-[var(--border)] py-6"
+    >
       <div className="grid gap-4">
         {optionNames.map((optionName) => (
           <div className="grid gap-2" key={optionName}>

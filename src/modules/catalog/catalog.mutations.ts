@@ -88,7 +88,10 @@ export async function upsertCatalogProduct(input: unknown, context: RequestConte
   );
 }
 
-export async function archiveCatalogProduct(input: { id: string }, context: RequestContext) {
+export async function archiveCatalogProduct(
+  input: { id: string },
+  context: RequestContext,
+) {
   const actor = context.actor;
   requireAdmin(actor);
   requirePermission(actor, "catalog.products.archive");
@@ -379,7 +382,8 @@ async function syncInventoryItem(
   ) {
     throw new ApplicationError({
       code: "VALIDATION_FAILED",
-      message: "Reserved stock cannot exceed on-hand stock unless backorders are allowed.",
+      message:
+        "Reserved stock cannot exceed on-hand stock unless backorders are allowed.",
       status: 400,
       expose: true,
     });

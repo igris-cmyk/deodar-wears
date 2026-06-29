@@ -19,6 +19,15 @@ import {
   RELATED_PRODUCT_LIMIT,
   SEASONAL_COLLECTION_SLUGS,
 } from "@/modules/catalog/catalog.constants";
+import { formProductInputSchema } from "@/modules/catalog/catalog.schemas";
+
+const validFormProduct = {
+  name: "Cedar Knit Crew",
+  slug: "cedar-knit-crew",
+  shortDescription: "Dense seasonal knitwear.",
+  description: "A compact rib knit crew with substantial warmth and recovery.",
+  status: "DRAFT" as const,
+};
 
 describe("Phase 2 catalog domain helpers", () => {
   it("normalizes slugs deterministically", () => {
@@ -56,6 +65,23 @@ describe("Phase 2 catalog domain helpers", () => {
     expect(() => validateVariantOptionValues({ Size: "" })).toThrow(
       expect.objectContaining({ code: "VALIDATION_FAILED" }),
     );
+  });
+
+  it("normalizes optional catalog text without accepting null", () => {
+    expect(formProductInputSchema.parse(validFormProduct).seoTitle).toBeUndefined();
+    expect(
+      formProductInputSchema.parse({ ...validFormProduct, seoTitle: "" }).seoTitle,
+    ).toBeUndefined();
+    expect(
+      formProductInputSchema.parse({ ...validFormProduct, seoTitle: "   " }).seoTitle,
+    ).toBeUndefined();
+    expect(
+      formProductInputSchema.parse({ ...validFormProduct, seoTitle: "  Cedar knit  " })
+        .seoTitle,
+    ).toBe("Cedar knit");
+    expect(
+      formProductInputSchema.safeParse({ ...validFormProduct, seoTitle: null }).success,
+    ).toBe(false);
   });
 
   it("calculates availability without storing a stale available number", () => {

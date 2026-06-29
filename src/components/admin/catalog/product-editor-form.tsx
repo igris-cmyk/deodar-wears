@@ -68,7 +68,11 @@ export function ProductEditorForm({
           />
         </Field>
         <Field label="Description" name="description">
-          <Textarea name="description" required defaultValue={product?.description ?? ""} />
+          <Textarea
+            name="description"
+            required
+            defaultValue={product?.description ?? ""}
+          />
         </Field>
       </section>
 
@@ -102,7 +106,10 @@ export function ProductEditorForm({
         </div>
         <div className="grid gap-5">
           {variants.map((variant, index) => (
-            <VariantFields key={variant.id ?? `blank-${index}`} variant={variant} />
+            <VariantFields
+              key={variant.id ?? `blank-${String(index)}`}
+              variant={variant}
+            />
           ))}
         </div>
       </section>
@@ -168,7 +175,11 @@ export function ProductEditorForm({
   );
 }
 
-function VariantFields({ variant }: { variant: Variant | ReturnType<typeof blankVariant> }) {
+function VariantFields({
+  variant,
+}: {
+  variant: Variant | ReturnType<typeof blankVariant>;
+}) {
   const optionValues = variant.optionValues as Record<string, string>;
   const price = "prices" in variant ? variant.prices[0] : undefined;
   const inventory = "inventoryItem" in variant ? variant.inventoryItem : undefined;

@@ -67,7 +67,9 @@ export async function getCurrentRequestContext(): Promise<RequestContext> {
         sessionId: authSession?.session?.id ?? "unknown-session",
         permissions: new Set(
           user.adminMembership.roles.flatMap((entry) =>
-            entry.role.permissions.map((permissionEntry) => permissionEntry.permission.code),
+            entry.role.permissions.map(
+              (permissionEntry) => permissionEntry.permission.code,
+            ),
           ),
         ),
         mfaVerifiedAt: toDate(authSession?.session?.mfaVerifiedAt),
