@@ -34,7 +34,7 @@ jobs:
       TEST_DIRECT_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
       REQUIRE_DATABASE_TESTS: "true"
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
         with:
           version: 11.7.0
@@ -84,7 +84,7 @@ jobs:
       TEST_DIRECT_URL: postgresql://deodar:deodar@localhost:5432/deodar_test
       REQUIRE_DATABASE_TESTS: "true"
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
         with:
           version: 11.7.0
