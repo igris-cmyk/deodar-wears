@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Cedar Knit Crew product placeholder</title>
+  <desc id="desc">A dense charcoal crew knit with quiet rib texture.</desc>
+  <rect width="1200" height="1500" fill="#ece9df"/>
+  <path d="M267 486c51-129 167-213 333-213s282 84 333 213l80 620c10 76-49 143-126 143H313c-77 0-136-67-126-143l80-620Z" fill="#303331"/>
+  <path d="M450 290c35 53 84 79 150 79s115-26 150-79" fill="none" stroke="#171817" stroke-width="52" stroke-linecap="round"/>
+  <g opacity=".18" stroke="#f4f2ec" stroke-width="7"><path d="M326 532h548M315 603h570M304 674h592M294 745h612M284 816h632M275 887h650M266 958h668M257 1029h686"/></g>
+  <text x="92" y="1374" fill="#282a28" font-family="Arial, sans-serif" font-size="38" font-weight="700" letter-spacing="7">DEODAR WEARS</text>
+</svg>

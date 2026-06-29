@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 
@@ -9,12 +11,15 @@ const requireDatabase =
   process.env.APP_ENV === "staging" ||
   process.env.APP_ENV === "production";
 
-if (!process.env.TEST_DATABASE_URL) {
+const testDatabaseUrl = process.env.TEST_DATABASE_URL;
+const testDirectUrl = process.env.TEST_DIRECT_URL;
+
+if (!testDatabaseUrl || !testDirectUrl) {
   const message =
-    "TEST_DATABASE_URL is not set; migration rehearsal cannot run against PostgreSQL.";
+    "TEST_DATABASE_URL and TEST_DIRECT_URL are required for migration tests.";
 
   if (requireDatabase) {
-    console.error(`${message} Set TEST_DATABASE_URL or unset required DB mode.`);
+    console.error(message);
     process.exit(1);
   }
 
@@ -28,8 +33,8 @@ execFileSync(process.execPath, [prismaCli, "migrate", "deploy"], {
   stdio: "inherit",
   env: {
     ...process.env,
-    DATABASE_URL: process.env.TEST_DATABASE_URL,
-    DIRECT_URL: process.env.TEST_DIRECT_URL ?? process.env.TEST_DATABASE_URL,
+    DATABASE_URL: testDatabaseUrl,
+    DIRECT_URL: testDirectUrl,
     APP_ENV: "test",
   },
 });

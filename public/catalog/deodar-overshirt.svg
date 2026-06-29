@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Deodar Overshirt product placeholder</title>
+  <desc id="desc">A refined olive overshirt on a warm neutral studio ground.</desc>
+  <rect width="1200" height="1500" fill="#e9e4d8"/>
+  <path d="M325 323 470 240h260l145 83 62 871H263l62-871Z" fill="#526558"/>
+  <path d="M470 240h260l-64 183H534L470 240Z" fill="#34483b"/>
+  <path d="M534 423h132v771H534z" fill="#647466" opacity=".55"/>
+  <path d="M395 410h176v188H395zM629 410h176v188H629z" fill="#2d3d34" opacity=".42"/>
+  <path d="M350 707h500M376 1010h448" stroke="#d9d0c0" stroke-width="20" opacity=".34"/>
+  <circle cx="600" cy="505" r="12" fill="#e7dfd1"/><circle cx="600" cy="615" r="12" fill="#e7dfd1"/><circle cx="600" cy="725" r="12" fill="#e7dfd1"/>
+  <text x="92" y="1374" fill="#282a28" font-family="Arial, sans-serif" font-size="38" font-weight="700" letter-spacing="7">DEODAR WEARS</text>
+</svg>

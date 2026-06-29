@@ -3,6 +3,10 @@ import type { Route } from "next";
 
 const links: { href: Route; label: string }[] = [
   { href: "/admin/overview", label: "Overview" },
+  { href: "/admin/catalog/products", label: "Products" },
+  { href: "/admin/catalog/categories", label: "Categories" },
+  { href: "/admin/catalog/collections", label: "Collections" },
+  { href: "/admin/inventory", label: "Inventory" },
   { href: "/admin/settings/users", label: "Users" },
   { href: "/admin/settings/roles", label: "Roles" },
   { href: "/admin/security", label: "Security" },

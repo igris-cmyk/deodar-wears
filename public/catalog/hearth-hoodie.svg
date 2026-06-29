@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Hearth Hoodie product placeholder</title>
+  <desc id="desc">A washed rust hoodie with a soft structured hood.</desc>
+  <rect width="1200" height="1500" fill="#e9e1d4"/>
+  <path d="M302 484c44-138 143-219 298-219s254 81 298 219l64 670c7 72-49 134-122 134H360c-73 0-129-62-122-134l64-670Z" fill="#b75532"/>
+  <path d="M462 339c38-54 84-80 138-80s100 26 138 80l-53 161H515l-53-161Z" fill="#823d28"/>
+  <path d="M430 841h340v188H430z" fill="#8f472f" opacity=".55"/>
+  <path d="M531 510c-16 74-12 132 12 174M669 510c16 74 12 132-12 174" stroke="#eaded0" stroke-width="12" opacity=".55"/>
+  <text x="92" y="1374" fill="#282a28" font-family="Arial, sans-serif" font-size="38" font-weight="700" letter-spacing="7">DEODAR WEARS</text>
+</svg>
