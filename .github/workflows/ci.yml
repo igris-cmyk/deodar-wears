@@ -45,11 +45,11 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      - run: pnpm prisma:generate
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm prisma:validate
-      - run: pnpm prisma:generate
       - run: pnpm prisma:migrate:deploy
       - run: pnpm prisma:seed
       - run: pnpm prisma:seed
@@ -95,6 +95,7 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      - run: pnpm prisma:generate
       - run: pnpm prisma:migrate:deploy
       - run: pnpm prisma:seed
       - run: pnpm exec playwright install --with-deps chromium

@@ -14,6 +14,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "postinstall": "pnpm prisma:generate",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
